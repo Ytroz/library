@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Catalog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-book me-2"></i>BookCatalog
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/landing-page.html">
+                            <i class="bi bi-house-door me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#termsModal" data-bs-toggle="modal">
+                            <i class="bi bi-file-text me-1"></i> Terms
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/LD.html">
+                            <i class="bi bi-house-door me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <header class="text-center mb-5">
+            <h1 class="display-4 fw-bold">📖 Book Catalog</h1>
+            <p class="lead text-muted">Browse our collection of books across various genres</p>
+        </header>
+        
+        <!-- Search and Filter Section -->
+        <div class="row mb-4">
+            <div class="col-md-8 mb-3 mb-md-0">
+                <div class="search-box input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Search by title, author, or genre...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="filter-section">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <select id="genreFilter" class="form-select">
+                                <option value="all" selected>All Genres</option>
+                                <option value="History">History</option>
+                                <option value="Politics">Politics</option>
+                                <option value="Business">Business</option>
+                                <option value="Engineering">Engineering</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <select id="statusFilter" class="form-select">
+                                <option value="all" selected>All Status</option>
+                                <option value="Available">Available</option>
+                                <option value="Borrowed">Borrowed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Book Count -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div id="bookCount" class="text-muted">Loading books...</div>
+            <button id="resetFilters" class="btn btn-sm btn-outline-secondary">Reset Filters</button>
+        </div>
+        
+        <!-- Book Catalog -->
+        <div id="bookCatalog" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+            <!-- Books will be dynamically inserted here by JavaScript -->
+        </div>
+        
+        <!-- Empty State -->
+        <div id="emptyState" class="text-center py-5 d-none">
+            <div class="empty-icon mb-3">
+                <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+            </div>
+            <h4 class="text-muted">No books found</h4>
+            <p class="text-muted">Try adjusting your search or filters</p>
+            <button id="resetFiltersEmpty" class="btn btn-primary">Reset Filters</button>
+        </div>
+    </div>
+
+    <!-- Book Details Modal -->
+    <div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookModalTitle">Book Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <img id="bookModalImage" src="" class="img-fluid rounded" alt="Book Cover">
+                        </div>
+                        <div class="col-md-8">
+                            <h4 id="bookModalName"></h4>
+                            <p class="text-muted" id="bookModalAuthor"></p>
+                            <div class="mb-3">
+                                <span class="badge" id="bookModalGenre"></span>
+                                <span class="ms-2" id="bookModalStatus"></span>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button id="borrowBtn" class="btn btn-primary">Borrow Book</button>
+                                <button id="returnBtn" class="btn btn-success d-none">Return Book</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Terms and Conditions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4>Book Borrowing Terms</h4>
+                    <ol class="mb-4">
+                        <li>Books can be borrowed for a maximum of 14 days</li>
+                        <li>Only 3 books can be borrowed at a time</li>
+                        <li>Late returns will incur a fine of $1 per day</li>
+                        <li>Books must be returned in the same condition as borrowed</li>
+                    </ol>
+                    
+                    <h4>User Responsibilities</h4>
+                    <ol class="mb-4">
+                        <li>Users must provide valid identification to borrow books</li>
+                        <li>Lost or damaged books must be reported immediately</li>
+                        <li>The replacement cost for lost books will be charged to the user</li>
+                    </ol>
+                    
+                    <h4>Privacy Policy</h4>
+                    <p>We respect your privacy. All personal information collected will be used solely for library purposes and will not be shared with third parties.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I Understand</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/catalog.js"></script>
+</body>
+</html>

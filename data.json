@@ -1,0 +1,148 @@
+{
+  "books": [
+    {
+      "id": 1,
+      "title": "Black Salt large",
+      "author": "Dr. F. Oyeyemi",
+      "genre": "Fiction",
+      "available": true,
+      "cover": "/Black_Salt_large.webp"
+    },
+    {
+      "id": 2,
+      "title": "Buying a Business",
+      "author": "Jonathan",
+      "genre": "Business",
+      "available": true,
+      "cover": "/image/buying a business.jpeg"
+    },
+    {
+      "id": 3,
+      "title": "Gate of Africa",
+      "author": "Harper Lee",
+      "genre": "History",
+      "available": false,
+      "cover": "/image/gate of africa.jpg"
+    },
+    {
+      "id": 4,
+      "title": "Roman Conquest of North Africa",
+      "author": "Nic Feild",
+      "genre": "History",
+      "available": true,
+      "cover": "/image/North-Africa.jpg"
+    },
+    {
+      "id": 5,
+      "title": "The Negroes",
+      "author": "J.R.R. Tolkien",
+      "genre": "History",
+      "available": true,
+      "cover": "/image/the book of negroes.jpeg"
+    },
+    {
+      "id": 6,
+      "title": "Bury The Chains",
+      "author": "Jane Austen",
+      "genre": "History",
+      "available": false,
+      "cover": "/image/Bury The Chains.jpg"
+    },
+    {
+      "id": 7,
+      "title": "Civil Engineering handbook",
+      "author": "Proveen Dwivedi | Prachi Brajpai",
+      "genre": "Engineering",
+      "available": true,
+      "cover": "/image/Civil-Engineering-handbook-gkp.jpg"
+    },
+    {
+      "id": 8,
+      "title": "Into Africa",
+      "author": "Mike Connell",
+      "genre": "History",
+      "available": true,
+      "cover": "/image/into Africa.jpg"
+    },
+    {
+      "id": 9,
+      "title": "Basic Mechanical Engineering",
+      "author": "M.P. Poonia | S.C. Sharma",
+      "genre": "Engineering",
+      "available": true,
+      "cover": "/image/basic mechanical engineering.jpeg"
+    },
+    {
+      "id": 10,
+      "title": "The Book of Africa",
+      "author": "Yuval Noah Harari",
+      "genre": "History",
+      "available": true,
+      "cover": "/image/The Book of Africa.jpg"
+    },
+    {
+      "id": 11,
+      "title": "The Aristotle Politics",
+      "author": "Carnes Lord",
+      "genre": "Politics",
+      "available": true,
+      "cover": "/image/Aristotle.jpg"
+    },
+    {
+      "id": 12,
+      "title": "The Political Class",
+      "author": "Peter Allens",
+      "genre": "Politics",
+      "available": true,
+      "cover": "/image/the political class.jpg"
+    },
+    {
+      "id": 13,
+      "title": "Kingdom of Africa",
+      "author": "Adedoyin Remilekun",
+      "genre": "History",
+      "available": false,
+      "cover": "/image/9780520395671.avif"
+    },
+    {
+      "id": 14,
+      "title": "The Handbook of Mechanical Engineering",
+      "author": "Rowland Wuzo",
+      "genre": "Engineering",
+      "available": false,
+      "cover": "/image/The Handbook of Mechanical engineering.jpeg"
+    },
+    {
+      "id": 15,
+      "title": "Politics on the Edge",
+      "author": "Rory Stewart",
+      "genre": "Politics",
+      "available": false,
+      "cover": "/image/politics on the Edge.jpg"
+    },
+    {
+      "id": 16,
+      "title": "Our Time is Now",
+      "author": "Stacy Adams",
+      "genre": "Politics",
+      "available": false,
+      "cover": "/image/Our Time is Now.jpg"
+    },
+    {
+      "id": 17,
+      "title": "Superstar Business Secrets",
+      "author": "Mark T. Moore",
+      "genre": "Business",
+      "available": false,
+      "cover": "/image/superstar business secrets.jpg"
+    },
+    {
+      "id": 18,
+      "title": "The First 90 Days",
+      "author": "Peter Allens",
+      "genre": "Business",
+      "available": true,
+      "cover": "/image/the first 90 days.webp"
+    }
+  ]
+}
