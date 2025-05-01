@@ -97,6 +97,21 @@ document.addEventListener('DOMContentLoaded', function() {
     let isLoggedIn = false;
     let currentUser = null;
   
+    // Create and manage register button
+    const navbarNav = document.querySelector('.navbar-nav');
+    const registerButton = document.createElement('li');
+    registerButton.classList.add('nav-item', 'ms-lg-2');
+    registerButton.innerHTML = '<button class="btn btn-primary nav-link register-button">Register</button>';
+    navbarNav.appendChild(registerButton);
+    const registerButtonElement = document.querySelector('.register-button');
+  
+    // Create and manage catalog link
+    const catalogLink = document.createElement('li');
+    catalogLink.classList.add('nav-item', 'ms-lg-2', 'catalog-link');
+    catalogLink.innerHTML = '<a class="nav-link" href="/catalog.html">Catalog</a>';
+    navbarNav.appendChild(catalogLink);
+    const catalogLinkElement = document.querySelector('.catalog-link');
+  
     // Local storage functions
     function saveUsers(users) {
         localStorage.setItem('libraryUsers', JSON.stringify(users));
@@ -121,19 +136,34 @@ document.addEventListener('DOMContentLoaded', function() {
     isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
   
-    // Update auth button based on login state
-    if (isLoggedIn && currentUser) {
-        authButton.textContent = 'Logout';
-        authButton.classList.remove('btn-outline-primary');
-        authButton.classList.add('btn-danger');
-        // Show welcome message
-        const welcomeMessage = document.querySelector('.welcome-message') || createWelcomeMessage();
-        welcomeMessage.textContent = `Welcome, ${currentUser.email.split('@')[0]}!`;
-        welcomeMessage.parentElement.classList.remove('d-none');
-    } else {
-        authButton.textContent = getUsers().length > 0 ? 'Login' : 'Register';
-        authButton.classList.add('btn-outline-primary');
+    // Update buttons and catalog link based on login state
+    function updateAuthButtons() {
+        if (isLoggedIn && currentUser) {
+            authButton.textContent = 'Logout';
+            authButton.classList.remove('btn-outline-primary');
+            authButton.classList.add('btn-danger');
+            registerButton.classList.add('d-none');
+            catalogLinkElement.classList.remove('d-none');
+            // Show welcome message
+            const welcomeMessage = document.querySelector('.welcome-message') || createWelcomeMessage();
+            welcomeMessage.textContent = `Welcome, ${currentUser.email.split('@')[0]}!`;
+            welcomeMessage.parentElement.classList.remove('d-none');
+        } else {
+            authButton.textContent = 'Login';
+            authButton.classList.add('btn-outline-primary');
+            authButton.classList.remove('btn-danger');
+            registerButton.classList.remove('d-none');
+            catalogLinkElement.classList.add('d-none');
+            // Hide welcome message
+            const welcomeMessage = document.querySelector('.welcome-message');
+            if (welcomeMessage) {
+                welcomeMessage.parentElement.classList.add('d-none');
+            }
+        }
     }
+  
+    // Initialize button and link states
+    updateAuthButtons();
   
     // Create registration modal dynamically
     const registerModalHtml = `
@@ -160,6 +190,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Register</button>
                         </form>
+                        <div class="mt-3 text-center">
+                            <p>Already have an account? <a href="#" id="toLoginLink" class="text-primary">Login</a></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -182,13 +215,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <label for="emailInput" class="form-label">Email address</label>
                                 <input type="email" class="form-control" id="emailInput" placeholder="Enter your email" required>
                             </div>
-                            <div class="mb W-3">
+                            <div class="mb-3">
                                 <label for="passwordInput" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="passwordInput" placeholder="Enter your password" required>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Login</button>
                         </form>
                         <div class="mt-3 text-center">
+                            <p>Don't have an account? <a href="#" id="toRegisterLink" class="text-primary">Register</a></p>
                             <a href="#" class="text-muted">Forgot password?</a>
                         </div>
                     </div>
@@ -198,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.body.insertAdjacentHTML('beforeend', loginModalHtml);
   
-    // Handle auth button click
+    // Handle auth button click (Login/Logout)
     authButton.addEventListener('click', function(e) {
         e.preventDefault();
         if (isLoggedIn) {
@@ -206,24 +240,20 @@ document.addEventListener('DOMContentLoaded', function() {
             isLoggedIn = false;
             currentUser = null;
             clearLoginState();
-            authButton.textContent = getUsers().length > 0 ? 'Login' : 'Register';
-            authButton.classList.remove('btn-danger');
-            authButton.classList.add('btn-outline-primary');
+            updateAuthButtons();
             alert('You have logged out successfully.');
-            // Hide welcome message
-            const welcomeMessage = document.querySelector('.welcome-message');
-            if (welcomeMessage) {
-                welcomeMessage.parentElement.classList.add('d-none');
-            }
-        } else if (getUsers().length === 0) {
-            // Show register modal
-            const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
-            registerModal.show();
         } else {
             // Show login modal
             const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
             loginModal.show();
         }
+    });
+  
+    // Handle register button click
+    registerButtonElement.addEventListener('click', function(e) {
+        e.preventDefault();
+        const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+        registerModal.show();
     });
   
     // Handle registration form submission
@@ -252,12 +282,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
   
-        // Simulate registration
+        // Register new user
         setTimeout(() => {
             users.push({ email, password });
             saveUsers(users);
-            authButton.textContent = 'Login';
-            authButton.classList.add('btn-outline-primary');
+            updateAuthButtons();
   
             // Close register modal
             const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
@@ -288,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
   
-        // Simulate authentication
+        // Authenticate user
         setTimeout(() => {
             const users = getUsers();
             const user = users.find(u => u.email === email && u.password === password);
@@ -301,9 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isLoggedIn = true;
             currentUser = { email };
             saveLoginState(currentUser);
-            authButton.textContent = 'Logout';
-            authButton.classList.remove('btn-outline-primary');
-            authButton.classList.add('btn-danger');
+            updateAuthButtons();
   
             // Close login modal
             const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
@@ -324,11 +351,27 @@ document.addEventListener('DOMContentLoaded', function() {
   
     // Create welcome message element
     function createWelcomeMessage() {
-        const navbarNav = document.querySelector('.navbar-nav');
         const welcomeMessage = document.createElement('li');
         welcomeMessage.classList.add('nav-item', 'ms-lg-3');
         welcomeMessage.innerHTML = '<span class="nav-link welcome-message"></span>';
         navbarNav.appendChild(welcomeMessage);
         return welcomeMessage.querySelector('.welcome-message');
     }
+  
+    // Toggle between login and register modals
+    document.getElementById('toRegisterLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+        loginModal.hide();
+        const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+        registerModal.show();
+    });
+  
+    document.getElementById('toLoginLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+        registerModal.hide();
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+    });
   });

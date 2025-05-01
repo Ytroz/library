@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </span>
                         </div>
                     </div>
-                </div>
+                </div> 
             `;
             bookCatalog.appendChild(bookCard);
             
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function filterBooks() {
         const searchTerm = searchInput.value.toLowerCase();
         const genreValue = genreFilter.value;
-        const statusValue = statusFilter.value;
+        const statusValue = statusFilter.value;gyl
         
         const filteredBooks = books.filter(book => {
             const matchesSearch = book.title.toLowerCase().includes(searchTerm) || 
