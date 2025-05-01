@@ -70,7 +70,7 @@ class LibraryManager {
         if (book && book.status === "Borrowed") {
             const updates = {
                 status: "Available",
-                borrowedBy: null,
+                borrowedBy: person,
                 dueDate: null
             };
             return this.updateBook(id, updates);
@@ -100,8 +100,11 @@ class LibraryManager {
         return this.getBorrowedBooks()
             .filter(book => book.dueDate)
             .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
-            .slice(0, limit);
+       
+     .slice(0, limit);
     }
+
+    
 }
 
 const libraryManager = new LibraryManager();
@@ -276,13 +279,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Sample book data - replace with your actual data source
     const books = [
         {
-            id: 1,
-            title: "Sample Book",
-            author: "John Doe",
-            genre: "History",
+            id: 2,
+            title: "Buying a Business",
+            author: "Jonathan",
+            genre: "Business",
             status: "Available",
-            image: "https://via.placeholder.com/150"
-        }
+            image: "/image/buying a business.jpeg"
+        },
         // Add more books as needed
     ];
 
@@ -326,3 +329,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add modal handling
     // Add borrow/return functionality
 });
+
