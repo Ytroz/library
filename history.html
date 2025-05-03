@@ -17,15 +17,14 @@
             --light-color: #f9fafb;
             --gray-color: #6b7280;
         } 
-        
+
         body {
-            background-image:url(/image/pngtree-stack-of-books-in-a-library-with-sunlight-streaming-through-the-picture-image_15776652.jpg) ;
-            background-size: cover;
-            background-repeat: no-repeat;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            color:#f9fafb;
-        }
-        
+  background: 
+    linear-gradient(to bottom, rgba(91, 97, 97, 0.9), rgba(162, 167, 167, 0.7)),
+    url('/image/pngtree-stack-of-books-in-a-library-with-sunlight-streaming-through-the-picture-image_15776652.jpg') center/cover fixed;
+    color: #e5e7eb;
+}
+
         .history-container {
             max-width: 900px;
             margin: 2rem auto;
@@ -39,7 +38,7 @@
         .page-header {
             text-align: center;
             margin-bottom: 2.5rem;
-            color: var(--white-color);
+            color: var(--light-color);
             padding-bottom: 1.5rem;
             border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         }
@@ -48,6 +47,7 @@
             font-weight: 700;
             font-size: 1.75rem;
             margin-bottom: 0.5rem;
+            color: var(--light-color);
         }
         
         .page-header p {
@@ -59,7 +59,7 @@
             font-weight: 600;
             font-size: 1.25rem;
             margin-bottom: 1.25rem;
-            /* color: var(--dark-color); */
+            color: var(--lighte-color);
             display: flex;
             align-items: center;
             gap: 0.75rem;
@@ -107,7 +107,7 @@
         
         .book-title {
             font-weight: 600;
-            /* color: var(--dark-color); */
+            color: var(--light-color);
             margin-bottom: 0.25rem;
             font-size: 1.05rem;
         }
