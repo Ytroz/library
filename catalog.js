@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const resetFiltersEmpty = document.getElementById('resetFiltersEmpty');
     const bookCount = document.getElementById('bookCount');
     const emptyState = document.getElementById('emptyState');
-    
+
     // Modal Elements
     const bookModal = new bootstrap.Modal(document.getElementById('bookModal'));
     const bookModalTitle = document.getElementById('bookModalTitle');
@@ -168,10 +168,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const borrowBtn = document.getElementById('borrowBtn');
     const returnBtn = document.getElementById('returnBtn');
 
+    // Initialize borrowing history from localStorage
+    let borrowingHistory = JSON.parse(localStorage.getItem('borrowingHistory')) || {
+        current: [],
+        past: []
+    };
+
     let currentBookId = null;
 
     // Initialize the app
     function init() {
+        // Sync book status with borrowing history
+        books.forEach(book => {
+            const isBorrowed = borrowingHistory.current.some(b => b.bookId === book.id);
+            book.status = isBorrowed ? 'Borrowed' : 'Available';
+        });
         renderBooks(books);
         setupEventListeners();
     }
@@ -179,41 +190,41 @@ document.addEventListener('DOMContentLoaded', function() {
     // Render books to the DOM
     function renderBooks(booksToRender) {
         bookCatalog.innerHTML = '';
-        
+
         if (booksToRender.length === 0) {
             emptyState.classList.remove('d-none');
             bookCatalog.classList.add('d-none');
             bookCount.textContent = 'No books found';
             return;
         }
-        
+
         emptyState.classList.add('d-none');
         bookCatalog.classList.remove('d-none');
-        
+
         booksToRender.forEach(book => {
             const bookCard = document.createElement('div');
             bookCard.className = 'col';
             bookCard.innerHTML = `
-                <div class="card book-card" data-id="${book.id}">
+                <div class="card book-card h-100 shadow-sm" data-id="${book.id}">
                     <img src="${book.image}" class="card-img-top book-cover" alt="${book.title} Cover">
                     <div class="card-body">
                         <h5 class="card-title">${book.title}</h5>
                         <p class="card-text text-muted">${book.author}</p>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge" data-genre="${book.genre}">${book.genre}</span>
-                            <span class="${book.status === 'Available' ? 'available' : 'borrowed'}">
+                            <span class="badge bg-primary">${book.genre}</span>
+                            <span class="text-${book.status === 'Available' ? 'success' : 'danger'}">
                                 <i class="bi ${book.status === 'Available' ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}"></i> ${book.status}
                             </span>
                         </div>
                     </div>
-                </div> 
+                    <div class="card-footer bg-white border-0">
+                        <button class="btn btn-primary w-100 view-details">View Details</button>
+                    </div>
+                </div>
             `;
             bookCatalog.appendChild(bookCard);
-            
-            // Add click event to each book card
-            bookCard.querySelector('.book-card').addEventListener('click', () => openBookModal(book.id));
         });
-        
+
         // Update book count
         bookCount.textContent = `Showing ${booksToRender.length} of ${books.length} books`;
     }
@@ -222,18 +233,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function filterBooks() {
         const searchTerm = searchInput.value.toLowerCase();
         const genreValue = genreFilter.value;
-        const statusValue = statusFilter.value;gyl
-        
+        const statusValue = statusFilter.value;
+
         const filteredBooks = books.filter(book => {
-            const matchesSearch = book.title.toLowerCase().includes(searchTerm) || 
-                                book.author.toLowerCase().includes(searchTerm) ||
-                                book.genre.toLowerCase().includes(searchTerm);
+            const matchesSearch = book.title.toLowerCase().includes(searchTerm) ||
+                                 book.author.toLowerCase().includes(searchTerm) ||
+                                 book.genre.toLowerCase().includes(searchTerm);
             const matchesGenre = genreValue === 'all' || book.genre === genreValue;
             const matchesStatus = statusValue === 'all' || book.status === statusValue;
-            
+
             return matchesSearch && matchesGenre && matchesStatus;
         });
-        
+
         renderBooks(filteredBooks);
     }
 
@@ -241,17 +252,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function openBookModal(bookId) {
         const book = books.find(b => b.id === bookId);
         if (!book) return;
-        
+
         currentBookId = bookId;
         bookModalTitle.textContent = book.title;
         bookModalName.textContent = book.title;
-        bookModalAuthor.textContent = book.author;
+        bookModalAuthor.textContent = `by ${book.author}`;
         bookModalImage.src = book.image;
         bookModalImage.alt = `${book.title} Cover`;
         bookModalGenre.textContent = book.genre;
-        bookModalGenre.className = 'badge';
-        bookModalGenre.setAttribute('data-genre', book.genre);
-        
+        bookModalGenre.className = 'badge bg-primary';
+
         if (book.status === 'Available') {
             bookModalStatus.innerHTML = `<i class="bi bi-check-circle-fill text-success"></i> Available`;
             borrowBtn.classList.remove('d-none');
@@ -261,16 +271,46 @@ document.addEventListener('DOMContentLoaded', function() {
             borrowBtn.classList.add('d-none');
             returnBtn.classList.remove('d-none');
         }
-        
+
         bookModal.show();
     }
 
-    // Toggle book status (borrow/return)
-    function toggleBookStatus() {
+    // Borrow book
+    function borrowBook() {
+        if (borrowingHistory.current.length >= 3) {
+            alert('You can only borrow up to 3 books at a time.');
+            return;
+        }
+
+        // const bookIndex Anglo-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon-Saxon轩
+
         const bookIndex = books.findIndex(b => b.id === currentBookId);
         if (bookIndex === -1) return;
-        
-        books[bookIndex].status = books[bookIndex].status === 'Available' ? 'Borrowed' : 'Available';
+
+        books[bookIndex].status = 'Borrowed';
+        borrowingHistory.current.push({
+            bookId: currentBookId,
+            borrowDate: new Date().toISOString()
+        });
+        localStorage.setItem('borrowingHistory', JSON.stringify(borrowingHistory));
+        filterBooks();
+        bookModal.hide();
+    }
+
+    // Return book
+    function returnBook() {
+        const bookIndex = books.findIndex(b => b.id === currentBookId);
+        const borrowIndex = borrowingHistory.current.findIndex(b => b.bookId === currentBookId);
+        if (bookIndex === -1 || borrowIndex === -1) return;
+
+        const borrow = borrowingHistory.current.splice(borrowIndex, 1)[0];
+        borrowingHistory.past.push({
+            bookId: borrow.bookId,
+            borrowDate: borrow.borrowDate,
+            returnDate: new Date().toISOString()
+        });
+        books[bookIndex].status = 'Available';
+        localStorage.setItem('borrowingHistory', JSON.stringify(borrowingHistory));
         filterBooks();
         bookModal.hide();
     }
@@ -282,8 +322,17 @@ document.addEventListener('DOMContentLoaded', function() {
         statusFilter.addEventListener('change', filterBooks);
         resetFilters.addEventListener('click', resetAllFilters);
         resetFiltersEmpty.addEventListener('click', resetAllFilters);
-        borrowBtn.addEventListener('click', toggleBookStatus);
-        returnBtn.addEventListener('click', toggleBookStatus);
+        borrowBtn.addEventListener('click', borrowBook);
+        returnBtn.addEventListener('click', returnBook);
+
+        // Event delegation for book card clicks
+        bookCatalog.addEventListener('click', (e) => {
+            const btn = e.target.closest('.view-details');
+            if (btn) {
+                const bookId = parseInt(btn.closest('.book-card').dataset.id);
+                openBookModal(bookId);
+            }
+        });
     }
 
     // Reset all filters
